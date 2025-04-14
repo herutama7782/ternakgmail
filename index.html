@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gmail Dot Generator</title>
 
-  <!-- Google Fonts: Jost -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -39,13 +37,13 @@
 </head>
 <body class="font-sans bg-gray-800 text-gray-300 min-h-screen flex items-center justify-center transition-colors duration-500">
 
-  <!-- Generator Card -->
+  <!-- Generator -->
   <div class="bg-gray-700 p-8 rounded-3xl shadow-2xl w-full max-w-xl animate-fadeIn relative">
     <h2 class="text-4xl font-extrabold text-center text-gray-300 mb-6 animate-slideUp drop-shadow-lg">
       Ternak Gmail
     </h2>
 
-    <!-- Alert -->
+    <!-- warning -->
     <div id="customAlert" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white px-6 py-3 rounded-xl shadow-xl animate-slideUp z-50">
       <span id="alertMessage">Generate selesai!</span>
     </div>
@@ -56,8 +54,6 @@
         <label for="email" class="block text-sm font-semibold text-gray-300 mb-1">Input Gmail:</label>
         <input type="email" id="email" placeholder="contoh@gmail.com" class="block w-full rounded-xl border border-gray-500 shadow-md focus:border-gray-300 focus:ring-2 focus:ring-gray-400 bg-gray-600 text-gray-200" />
       </div>
-
-      <!-- Variasi disembunyikan tapi tetap aktif -->
       <div class="hidden">
         <input id="dotVariation" type="checkbox" checked />
         <input id="aliasVariation" type="checkbox" checked />
@@ -65,7 +61,7 @@
       </div>
     </div>
 
-    <!-- Result + Tombol Aksi -->
+    <!-- Result -->
     <div class="flex flex-col md:flex-row gap-6 mt-6">
       <!-- Textarea Hasil -->
       <div class="flex-1">
@@ -75,7 +71,7 @@
         <textarea id="result" readonly placeholder="Hasil akan muncul di sini..." class="w-full h-64 p-4 rounded-xl border border-gray-500 shadow-inner focus:outline-none text-sm bg-gray-700 text-gray-200"></textarea>
       </div>
 
-      <!-- Tombol Aksi -->
+      <!-- Tombol -->
       <div class="flex flex-col gap-4 w-full md:w-48">
         <button onclick="generateEmails()" class="bg-gray-600 text-white text-sm font-bold py-3 px-4 rounded-2xl hover:bg-gray-500 transition duration-300 shadow-xl">
           Create Mail Generator
@@ -159,7 +155,6 @@
         document.getElementById('result').value = finalResults.join('\n');
         document.getElementById('count').innerText = finalResults.length;
 
-        // Update background color to gray after generation
         document.getElementById('count').parentElement.classList.add('bg-gray-600');
         document.getElementById('count').parentElement.classList.remove('bg-transparent');
 
@@ -178,7 +173,6 @@
         document.getElementById('result').value = '';
         document.getElementById('count').innerText = '0';
 
-        // Reset background to transparent
         document.getElementById('count').parentElement.classList.remove('bg-gray-600');
         document.getElementById('count').parentElement.classList.add('bg-transparent');
 
