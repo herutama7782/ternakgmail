@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail Dot Generator</title>
+
+  <!-- Google Fonts: Jost -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Jost', 'sans-serif'],
+          },
+          animation: {
+            fadeIn: 'fadeIn 1s ease-in-out',
+            slideUp: 'slideUp 0.5s ease-in-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1 },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: 0 },
+              '100%': { transform: 'translateY(0)', opacity: 1 },
+            },
+          },
+        },
+      }
+    }
+  </script>
+</head>
+<body class="font-sans bg-gray-800 text-gray-300 min-h-screen flex items-center justify-center transition-colors duration-500">
+
+  <!-- Generator Card -->
+  <div class="bg-gray-700 p-8 rounded-3xl shadow-2xl w-full max-w-xl animate-fadeIn relative">
+    <h2 class="text-4xl font-extrabold text-center text-gray-300 mb-6 animate-slideUp drop-shadow-lg">
+      Ternak Gmail
+    </h2>
+
+    <!-- Alert -->
+    <div id="customAlert" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white px-6 py-3 rounded-xl shadow-xl animate-slideUp z-50">
+      <span id="alertMessage">Generate selesai!</span>
+    </div>
+
+    <!-- Input -->
+    <div class="mb-6 space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-semibold text-gray-300 mb-1">Input Gmail:</label>
+        <input type="email" id="email" placeholder="contoh@gmail.com" class="block w-full rounded-xl border border-gray-500 shadow-md focus:border-gray-300 focus:ring-2 focus:ring-gray-400 bg-gray-600 text-gray-200" />
+      </div>
+
+      <!-- Variasi disembunyikan tapi tetap aktif -->
+      <div class="hidden">
+        <input id="dotVariation" type="checkbox" checked />
+        <input id="aliasVariation" type="checkbox" checked />
+        <input id="googlemailVariation" type="checkbox" checked />
+      </div>
+    </div>
+
+    <!-- Result + Tombol Aksi -->
+    <div class="flex flex-col md:flex-row gap-6 mt-6">
+      <!-- Textarea Hasil -->
+      <div class="flex-1">
+        <p class="mb-2 text-sm text-gray-300 bg-gray-600 p-2 rounded-md">
+          Mail Generator: <span id="count">0</span>
+        </p>
+        <textarea id="result" readonly placeholder="Hasil akan muncul di sini..." class="w-full h-64 p-4 rounded-xl border border-gray-500 shadow-inner focus:outline-none text-sm bg-gray-700 text-gray-200"></textarea>
+      </div>
+
+      <!-- Tombol Aksi -->
+      <div class="flex flex-col gap-4 w-full md:w-48">
+        <button onclick="generateEmails()" class="bg-gray-600 text-white text-sm font-bold py-3 px-4 rounded-2xl hover:bg-gray-500 transition duration-300 shadow-xl">
+          Create Mail Generator
+        </button>
+        <button onclick="resetForm()" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-xl hover:bg-gray-400 transition">
+          Reset
+        </button>
+        <button onclick="exportCSV()" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-xl hover:bg-gray-400 transition">
+          Save .CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedEmails = localStorage.getItem('gmail_generated_results');
+        const savedCount = localStorage.getItem('gmail_generated_count');
+        const savedEmail = localStorage.getItem('gmail_main_email');
+
+        if (savedEmails) {
+          document.getElementById('result').value = savedEmails;
+          document.getElementById('count').innerText = savedCount || '0';
+        }
+        if (savedEmail) {
+          document.getElementById('email').value = savedEmail;
+        }
+      });
+
+      function showAlert(message) {
+        const alertBox = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('alertMessage');
+        alertMessage.textContent = message;
+        alertBox.classList.remove('hidden');
+        setTimeout(() => alertBox.classList.add('hidden'), 3000);
+      }
+
+      function generateEmails() {
+        const emailInput = document.getElementById('email').value.trim();
+        const dotEnabled = document.getElementById('dotVariation').checked;
+        const aliasEnabled = document.getElementById('aliasVariation').checked;
+        const googlemailEnabled = document.getElementById('googlemailVariation').checked;
+
+        const [username, domain] = emailInput.split('@');
+        if (!emailInput || domain.toLowerCase() !== 'gmail.com') {
+          showAlert('Email tidak valid!');
+          return;
+        }
+
+        const results = new Set();
+        results.add(username + '@gmail.com');
+
+        if (dotEnabled) {
+          for (let i = 0; i < (1 << (username.length - 1)); i++) {
+            let newEmail = '';
+            for (let j = 0; j < username.length; j++) {
+              newEmail += username[j];
+              if (j < username.length - 1 && (i & (1 << j))) {
+                newEmail += '.';
+              }
+            }
+            results.add(newEmail + '@gmail.com');
+          }
+        }
+
+        if (aliasEnabled) {
+          const aliasCount = 10;
+          for (let i = 1; i <= aliasCount; i++) {
+            results.add(`${username}+d${i}@gmail.com`);
+          }
+        }
+
+        if (googlemailEnabled) {
+          Array.from(results).forEach(email => {
+            const localPart = email.split('@')[0];
+            results.add(localPart + '@googlemail.com');
+          });
+        }
+
+        const finalResults = Array.from(results);
+        document.getElementById('result').value = finalResults.join('\n');
+        document.getElementById('count').innerText = finalResults.length;
+
+        // Update background color to gray after generation
+        document.getElementById('count').parentElement.classList.add('bg-gray-600');
+        document.getElementById('count').parentElement.classList.remove('bg-transparent');
+
+        localStorage.setItem('gmail_generated_results', finalResults.join('\n'));
+        localStorage.setItem('gmail_generated_count', finalResults.length);
+        localStorage.setItem('gmail_main_email', emailInput);
+
+        showAlert(`Total Generator: ${finalResults.length} email.`);
+      }
+
+      function resetForm() {
+        document.getElementById('email').value = '';
+        document.getElementById('dotVariation').checked = true;
+        document.getElementById('aliasVariation').checked = true;
+        document.getElementById('googlemailVariation').checked = true;
+        document.getElementById('result').value = '';
+        document.getElementById('count').innerText = '0';
+
+        // Reset background to transparent
+        document.getElementById('count').parentElement.classList.remove('bg-gray-600');
+        document.getElementById('count').parentElement.classList.add('bg-transparent');
+
+        localStorage.removeItem('gmail_generated_results');
+        localStorage.removeItem('gmail_generated_count');
+        localStorage.removeItem('gmail_main_email');
+      }
+
+      function exportCSV() {
+        const text = document.getElementById('result').value;
+        if (!text) return showAlert('Belum ada email untuk diekspor.');
+        const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'gmail_variations.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    </script>
+  </div>
+</body>
+</html>
