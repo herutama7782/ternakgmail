@@ -57,7 +57,7 @@
       <div class="hidden">
         <input id="dotVariation" type="checkbox" checked />
         <input id="aliasVariation" type="checkbox" checked />
-        <input id="googlemailVariation" type="checkbox" checked />
+        <input id="googlemailVariation" type="checkbox" unchecked />
       </div>
     </div>
 
@@ -120,7 +120,7 @@
         const emailInput = document.getElementById('email').value.trim();
         const dotEnabled = document.getElementById('dotVariation').checked;
         const aliasEnabled = document.getElementById('aliasVariation').checked;
-        const googlemailEnabled = document.getElementById('googlemailVariation').checked;
+        const googlemailEnabled = document.getElementById('googlemailVariation').unchecked;
 
         const [username, domain] = emailInput.split('@');
         if (!emailInput || domain.toLowerCase() !== 'gmail.com') {
@@ -174,7 +174,7 @@
         document.getElementById('email').value = '';
         document.getElementById('dotVariation').checked = true;
         document.getElementById('aliasVariation').checked = true;
-        document.getElementById('googlemailVariation').checked = true;
+        document.getElementById('googlemailVariation').checked = false;
         document.getElementById('result').value = '';
         document.getElementById('count').innerText = '0';
 
